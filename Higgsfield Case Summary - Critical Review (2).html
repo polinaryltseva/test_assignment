@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Counting Users to Optimizing Value — Higgsfield Test Assignment</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FAFAF7; --ink:#191A23; --muted:#6B6E76;
+    --indigo:#4F46E5; --indigo-soft:#E4E3FA;
+    --churn:#D64524; --keep:#0B7A5E;
+    --line:#E4E4DE; --card:#FFFFFF;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+  body{background:var(--paper);color:var(--ink);font:400 16px/1.55 "Inter",sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 28px}
+  .mono{font-family:"IBM Plex Mono",monospace}
+  h1,h2,h3{font-family:"Space Grotesk",sans-serif;letter-spacing:-.01em}
+  a{color:var(--indigo)}
+
+  /* gate header bars */
+  .gate{border-top:3px solid var(--ink);padding:18px 0 6px;display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap}
+  .gate .gnum{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--muted);letter-spacing:.08em}
+  .gate h2{font-size:30px;font-weight:700}
+  .gate .decision{font-family:"IBM Plex Mono",monospace;font-size:12px;padding:4px 10px;border:1.5px solid var(--ink);border-radius:2px;white-space:nowrap}
+  .decision.go{background:var(--keep);border-color:var(--keep);color:#fff}
+  .decision.hold{background:#fff;border-color:var(--churn);color:var(--churn)}
+  section{padding:26px 0 64px}
+
+  .lede{font-size:18px;max-width:760px;margin:14px 0 6px}
+  .lede b, p b{font-weight:600}
+  p.note{color:var(--muted);font-size:14px;max-width:760px;margin-top:8px}
+  .claim{font-family:"Space Grotesk",sans-serif;font-weight:500;font-size:19px;margin:26px 0 8px}
+
+  /* hero */
+  header{padding:64px 0 48px;border-bottom:1px solid var(--line)}
+  .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+  header h1{font-size:clamp(34px,5vw,54px);line-height:1.06;margin:16px 0 10px;max-width:860px}
+  header h1 em{font-style:normal;color:var(--churn)}
+  .statrow{display:flex;gap:14px;flex-wrap:wrap;margin-top:26px}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:14px 18px;min-width:170px}
+  .stat .v{font-family:"Space Grotesk",sans-serif;font-size:26px;font-weight:700}
+  .stat .k{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--muted);margin-top:2px;letter-spacing:.04em}
+
+  /* charts */
+  .fig{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:20px 22px 14px;margin:22px 0}
+  .fig .cap{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--muted);margin-bottom:12px;letter-spacing:.03em}
+  .fig svg{width:100%;height:auto;display:block}
+  .fig .foot{font-size:13.5px;color:var(--muted);margin-top:10px}
+  .cols2{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+  @media(max-width:820px){.cols2{grid-template-columns:1fr}}
+
+  /* tables */
+  table{width:100%;border-collapse:collapse;font-size:14px;margin:18px 0;background:var(--card);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+  th{font-family:"IBM Plex Mono",monospace;font-weight:500;font-size:12px;letter-spacing:.04em;text-align:left;color:var(--muted);padding:10px 12px;border-bottom:2px solid var(--ink);background:#F4F4EF}
+  td{padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+  td b{font-weight:600}
+  .keep-tag,.drop-tag{font-family:"IBM Plex Mono",monospace;font-size:11px;padding:1px 7px;border-radius:2px}
+  .keep-tag{background:#E3F2EC;color:var(--keep)}
+  .drop-tag{background:#FBE9E3;color:var(--churn)}
+
+  .grid5{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:20px 0}
+  @media(max-width:900px){.grid5{grid-template-columns:repeat(2,1fr)}}
+  .segcard{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px}
+  .segcard .sn{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted)}
+  .segcard h3{font-size:16px;margin:2px 0 8px}
+  .segcard p{font-size:13px;color:#3c3e46}
+  .segcard .treat{margin-top:8px;padding-top:8px;border-top:1px dashed var(--line);font-size:12.5px}
+  .segcard .treat b{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.06em;color:var(--indigo);display:block;margin-bottom:2px}
+
+  .twocol-list{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin:16px 0}
+  @media(max-width:820px){.twocol-list{grid-template-columns:1fr}}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:16px 18px}
+  .panel h3{font-size:15px;margin-bottom:8px}
+  .panel ul{list-style:none}
+  .panel li{font-size:14px;padding:5px 0;border-bottom:1px dashed var(--line)}
+  .panel li:last-child{border-bottom:none}
+  .panel li .mono{font-size:12px;color:var(--muted)}
+
+  footer{border-top:3px solid var(--ink);padding:28px 0 60px;margin-top:20px}
+  footer p{max-width:760px}
+  .pagemark{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);text-align:right;padding-top:8px}
+</style>
+</head>
+<body>
+
+<!-- ======================= HERO / EXEC SUMMARY ======================= -->
+<header>
+  <div class="wrap">
+    <div class="eyebrow">Higgsfield · Test assignment · B2C retention &amp; LTV case · Apr–Sep 2025 billing data</div>
+    <h1>From counting users to <em>optimizing value</em></h1>
+    <p class="lede" style="margin-top:4px;font-size:19px">The creator lifecycle — from first generation to long-term subscription value.</p>
+    <p class="lede">Half the revenue leaves at the first bill — everything below is about that renewal, and about who pays for the compute. <b>Goal: recurring revenue. Guardrail: margin per paying customer</b> — revenue that arrives at negative margin doesn't count as growth. On 19,125 observable paying accounts: 49% churn at the first bill and 19–31% after it, five behavioral segments whose LTV spans 4.6×, and a compute-cost ceiling that runs in the <i>reverse</i> order of LTV.</p>
+
+    <div class="statrow">
+      <div class="stat"><div class="v">49%</div><div class="k">churn at first bill</div></div>
+      <div class="stat"><div class="v">$117</div><div class="k">gross LTV ($115–203 on tail churn)</div></div>
+      <div class="stat"><div class="v">4.6×</div><div class="k">LTV spread across segments</div></div>
+      <div class="stat"><div class="v">$0.64 → $0.04</div><div class="k">breakeven $/image, seg 1 → 5</div></div>
+      <div class="stat"><div class="v">36%</div><div class="k">of cycle-1 revenue is dormant payers</div></div>
+    </div>
+
+    <div class="fig" style="margin-top:30px">
+      <div class="cap">SURVIVAL, MONTHLY SUBSCRIBERS — one cliff, then a plateau. Renewal by cycle: 51 / 69 / 79 / 81 / 80%</div>
+      <svg viewBox="0 0 960 190" role="img" aria-label="Survival curve: 100, 51, 35, 28, 22, 18 percent across billing cycles 0 to 5">
+        <!-- bars -->
+        <g font-family="IBM Plex Mono" font-size="12" fill="#6B6E76">
+          <rect x="40"  y="20"  width="110" height="140" fill="#4F46E5"/>
+          <rect x="195" y="88.6" width="110" height="71.4" fill="#4F46E5" opacity=".82"/>
+          <rect x="350" y="111" width="110" height="49" fill="#4F46E5" opacity=".72"/>
+          <rect x="505" y="120.8" width="110" height="39.2" fill="#4F46E5" opacity=".64"/>
+          <rect x="660" y="129.2" width="110" height="30.8" fill="#4F46E5" opacity=".58"/>
+          <rect x="815" y="134.8" width="110" height="25.2" fill="#4F46E5" opacity=".52"/>
+          <!-- churn slice on cycle 1 -->
+          <rect x="195" y="20" width="110" height="68.6" fill="#D64524" opacity=".16"/>
+          <text x="250" y="58" text-anchor="middle" fill="#D64524" font-weight="500">−49%</text>
+          <!-- labels -->
+          <text x="95"  y="14" text-anchor="middle" fill="#191A23" font-weight="500">100%</text>
+          <text x="250" y="83" text-anchor="middle" fill="#191A23" font-weight="500">51%</text>
+          <text x="405" y="105" text-anchor="middle" fill="#191A23" font-weight="500">35%</text>
+          <text x="560" y="115" text-anchor="middle" fill="#191A23" font-weight="500">28%</text>
+          <text x="715" y="123.5" text-anchor="middle" fill="#191A23" font-weight="500">22%</text>
+          <text x="870" y="129" text-anchor="middle" fill="#191A23" font-weight="500">18%</text>
+          <text x="95" y="180" text-anchor="middle">cycle 0</text><text x="250" y="180" text-anchor="middle">1</text>
+          <text x="405" y="180" text-anchor="middle">2</text><text x="560" y="180" text-anchor="middle">3</text>
+          <text x="715" y="180" text-anchor="middle">4</text><text x="870" y="180" text-anchor="middle">5</text>
+        </g>
+      </svg>
+      <div class="foot">$302,635 — 48% of first-cycle revenue — never renews. The leak is proportional across segments, so no segment is the leak: <b>one problem, one target — the first renewal.</b></div>
+    </div>
+
+    <h3 style="font-size:17px;margin:26px 0 6px">Segmentation — five behavioral segments on week-1 days × month-1 volume (details in Part 1)</h3>
+    <table>
+      <tr><th>segment</th><th class="num">share</th><th class="num">ARPU_meq</th><th class="num">renewal</th><th class="num">M1 jobs</th><th>one line</th></tr>
+      <tr><td><b>1 · one-shot</b></td><td class="num">30%</td><td class="num">$22</td><td class="num">48%</td><td class="num">5</td><td>day 1, ~5 video jobs, gone — 10% active in M2</td></tr>
+      <tr><td><b>2 · weak week-1</b></td><td class="num">36%</td><td class="num">$31</td><td class="num">51%</td><td class="num">17</td><td>returns, no routine — every session starts from a blank box</td></tr>
+      <tr><td><b>3 · habit, light</b></td><td class="num">19%</td><td class="num">$34</td><td class="num">49%</td><td class="num">29</td><td>healthy routine that never shows up in money</td></tr>
+      <tr><td><b>4 · habit, heavy</b></td><td class="num">12%</td><td class="num">$71</td><td class="num">55%</td><td class="num">203</td><td>86% image — asset pipelines feeding video passes</td></tr>
+      <tr><td><b>5 · top usage</b></td><td class="num">3%</td><td class="num">$138</td><td class="num">59%</td><td class="num">1,345</td><td>near-API image flows; $62/mo in top-ups, ladder ends below them</td></tr>
+    </table>
+
+    <h3 style="font-size:17px;margin:26px 0 6px">Key initiatives, ranked (details in Part 3)</h3>
+    <table>
+      <tr><th>#</th><th>Bet</th><th>Segment</th><th>Lever</th><th>Know before build</th></tr>
+      <tr><td class="mono">1</td><td><b>First-generation experience</b> — presets + prompt enhancer</td><td>1 · one-shot (30%)</td><td>retention: activation on a 48% first renewal</td><td>pull day-1 output &amp; cancel-rate stats</td></tr>
+      <tr><td class="mono">2</td><td><b>Max tier + co-pilot workflow</b></td><td>5 · top usage (3%)</td><td>expansion: turns $62/mo top-ups into a plan, ~$100–170k/yr</td><td>Max priceable above top-up spend without cannibalizing</td></tr>
+      <tr><td class="mono">3</td><td><b>Continue-your-project</b> + image-to-video</td><td>2 · weak week-1 (36%)</td><td>retention: m1 active days 2 → 5</td><td>session 1 leaves something worth continuing</td></tr>
+      <tr><td class="mono">4</td><td><b>Saved styles library</b></td><td>3 · habit light (19%)</td><td>retention: switching cost on a 49% renewal</td><td>reuse of prompts/settings already observable</td></tr>
+      <tr><td class="mono">5</td><td><b>Production pipeline</b> — consistency + storyboard canvas</td><td>4 · habit heavy (12%)</td><td>expansion: holds the 12% who pay $71 and expand 45%</td><td>cost per generation — breakeven here is $0.12/image</td></tr>
+    </table>
+    <p class="note">Two numbers finance can answer in a minute would change every conclusion most: <b>cost per generation</b> (then the video/image cost ratio, assumed 8×) and <b>CAC by channel</b>.</p>
+    <div class="pagemark">00 / 07 — executive summary</div>
+  </div>
+</header>
+
+<!-- ======================= GATE 1: GOAL & METRIC ======================= -->
+<section>
+  <div class="wrap">
+    <div class="gate">
+      <div><div class="gnum">PART 1 · FRAMING</div><h2>Goal &amp; metric</h2></div>
+      <div class="decision go">DECISION: RECURRING REVENUE / MARGIN GUARDRAIL</div>
+    </div>
+    <p class="lede">The business goal is <b>recurring revenue</b>. Every alternative breaks on its own: users and activity can be bought with trials, retention rises with zero acquisition, revenue-per-customer rises when cheap customers are lost. Revenue contains all drivers — improving one at another's expense shows up immediately.</p>
+    <p class="lede">The guardrail is <b>margin per paying customer</b>: every generation costs real compute, video far more than an image, so revenue can be bought at a loss.</p>
+
+    <div class="claim">Revenue this month = Σ over cohorts [ size × share still active × average payment ] — and it moves as:</div>
+    <p class="mono" style="font-size:14px;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:12px 16px;max-width:760px">Revenue<sub>t</sub> = Revenue<sub>t−1</sub> × NRR + New + Recovered,&nbsp; NRR = (1 − churn) + upgrades − downgrades</p>
+
+    <table style="max-width:760px">
+      <tr><th>driver</th><th>behaviour</th><th>share of revenue</th><th>call</th></tr>
+      <tr><td>Acquired</td><td>additive</td><td>50%</td><td>out of scope — the unpaid funnel is not in the data</td></tr>
+      <tr><td><b>Retained</b></td><td><b>compounds monthly</b></td><td>28%</td><td><b>focus 1</b></td></tr>
+      <tr><td><b>Expanded</b></td><td><b>compounds on survivors</b></td><td>19%</td><td><b>focus 2</b></td></tr>
+      <tr><td>Recovered</td><td>additive, small</td><td>3%</td><td>too small</td></tr>
+    </table>
+    <p class="note">New revenue dominating means the business currently runs on acquisition; retained and expanded dollars multiply the whole base every month, which is why they are the levers even at smaller shares.</p>
+    <div class="pagemark">01 / 07</div>
+  </div>
+</section>
+
+<!-- ======================= GATE 2: SEGMENTATION ======================= -->
+<section>
+  <div class="wrap">
+    <div class="gate">
+      <div><div class="gnum">PART 1 · USER SEGMENTATION</div><h2>Five segments, cut on tested behavior</h2></div>
+      <div class="decision go">DECISION: W1 DAYS × M1 VOLUME (LORENZ TAIL)</div>
+    </div>
+    <p class="lede">Segment design started as 24 behavioral hypotheses on <span class="mono">generations × customers × charges</span>, tested one-by-one (Mann–Whitney / χ², ranked by effect size, n makes p cheap), then cross-checked with CatBoost SHAP + permutation ΔAUC. Only what survived both became a cut.</p>
+
+    <div class="twocol-list">
+      <div class="panel">
+        <h3><span class="keep-tag">KEPT</span>&nbsp; as segmentation axes</h3>
+        <ul>
+          <li>Week-1 active days (habit) <span class="mono">— effect 0.07 retention, 0.40–0.61 expansion</span></li>
+          <li>Month-1 volume &amp; gaps, not bingeing <span class="mono">— m1_jobs 0.56–0.76 on expansion</span></li>
+          <li>Plan ladder position <span class="mono">— rungs_above: largest unique perm drop</span></li>
+          <li>Video share <span class="mono">— all-video expands less (−0.20…−0.31)</span></li>
+          <li>End-of-cycle spike → next top-up <span class="mono">— 0.29, strongest single test</span></li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3><span class="drop-tag">DROPPED</span>&nbsp; despite sounding right</h3>
+        <ul>
+          <li>9–5 / weekday as "professional" <span class="mono">— weekday-heavy expands less (−0.13)</span></li>
+          <li>Prompt length as skill / LTV <span class="mono">— evolution ns; long prompts earn less (−0.21)</span></li>
+          <li>Hour-of-day routine <span class="mono">— opposite sign</span></li>
+          <li>24-hour activation rule <span class="mono">— ns; continuous time-to-first-gen is real but small</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="claim">The cut, on 19,125 observable accounts (tenure ≥ 32d):</div>
+    <div class="fig">
+      <div class="cap">SEGMENT SHARE OF BASE × ARPU_MEQ — behavior barely separates renewal (48–59%); it separates money ($22 → $138, 6×)</div>
+      <svg viewBox="0 0 960 240" role="img" aria-label="Five segments by size and ARPU">
+        <g font-family="IBM Plex Mono" font-size="12" fill="#6B6E76">
+          <!-- size bars (width = share) scale: 1% = 8.6px -->
+          <rect x="230" y="14"  width="258" height="26" fill="#4F46E5" opacity=".45"/>
+          <rect x="230" y="58"  width="310" height="26" fill="#4F46E5" opacity=".55"/>
+          <rect x="230" y="102" width="165" height="26" fill="#4F46E5" opacity=".7"/>
+          <rect x="230" y="146" width="104" height="26" fill="#4F46E5" opacity=".85"/>
+          <rect x="230" y="190" width="26"  height="26" fill="#4F46E5"/>
+          <text x="220" y="32"  text-anchor="end" fill="#191A23">1 · one-shot</text>
+          <text x="220" y="76"  text-anchor="end" fill="#191A23">2 · weak week-1</text>
+          <text x="220" y="120" text-anchor="end" fill="#191A23">3 · habit, light</text>
+          <text x="220" y="164" text-anchor="end" fill="#191A23">4 · habit, heavy</text>
+          <text x="220" y="208" text-anchor="end" fill="#191A23">5 · top usage</text>
+          <text x="496" y="32">5,743 · 30% · $22 · renews 48%</text>
+          <text x="548" y="76">6,887 · 36% · $31 · renews 51%</text>
+          <text x="403" y="120">3,669 · 19% · $34 · renews 49%</text>
+          <text x="342" y="164">2,323 · 12% · <tspan font-weight="500" fill="#191A23">$71</tspan> · renews 55%</text>
+          <text x="264" y="208">503 · 3% · <tspan font-weight="500" fill="#191A23">$138</tspan> · renews 59%</text>
+        </g>
+      </svg>
+      <div class="foot">Rules: ≤1 day in W1 and nothing after → 1; &lt;3 W1 days → 2; ≥3 days split by month-1 jobs at p80 (88) and the Lorenz tail (smallest top slice holding 50% of jobs, floor p95 → ≥787 jobs). Annual is ~10% in every bucket — not a sixth segment.</div>
+    </div>
+
+    <div class="cols2">
+      <div class="fig">
+        <div class="cap">WHY THE HABIT CUT IS 3 DAYS — W1 active-days distribution piles at 1</div>
+        <svg viewBox="0 0 460 190" role="img" aria-label="Week 1 active days distribution with cut at 3">
+          <g font-family="IBM Plex Mono" font-size="11" fill="#6B6E76">
+            <rect x="30"  y="153" width="40" height="7"   fill="#4F46E5" opacity=".8"/>
+            <rect x="82"  y="18"  width="40" height="142" fill="#4F46E5" opacity=".8"/>
+            <rect x="134" y="68"  width="40" height="92"  fill="#4F46E5" opacity=".8"/>
+            <rect x="186" y="108" width="40" height="52"  fill="#0B7A5E"/>
+            <rect x="238" y="129" width="40" height="31"  fill="#0B7A5E"/>
+            <rect x="290" y="142" width="40" height="18"  fill="#0B7A5E"/>
+            <rect x="342" y="150" width="40" height="10"  fill="#0B7A5E"/>
+            <rect x="394" y="152" width="40" height="8"   fill="#0B7A5E"/>
+            <line x1="180" y1="8" x2="180" y2="168" stroke="#191A23" stroke-dasharray="4 4"/>
+            <text x="184" y="14" fill="#191A23">habit cut ≥3</text>
+            <text x="50" y="176" text-anchor="middle">0</text><text x="102" y="176" text-anchor="middle">1</text>
+            <text x="154" y="176" text-anchor="middle">2</text><text x="206" y="176" text-anchor="middle">3</text>
+            <text x="258" y="176" text-anchor="middle">4</text><text x="310" y="176" text-anchor="middle">5</text>
+            <text x="362" y="176" text-anchor="middle">6</text><text x="414" y="176" text-anchor="middle">7</text>
+          </g>
+        </svg>
+        <div class="foot">66% show up 0–2 days. Expansion is ~7% at 0–1 days, steps at 2, then a slope — no cliff. ≥2 would call 59% "habit"; ≥4 dumps 2.7k people who expand at 22% into weak week-1. 3 is the first repeated return.</div>
+      </div>
+      <div class="fig">
+        <div class="cap">BEHAVIORAL LOGIC — WHAT ACTUALLY DIFFERS</div>
+        <table style="margin:0;border:none;font-size:13px">
+          <tr><th></th><th class="num">1</th><th class="num">2</th><th class="num">3</th><th class="num">4</th><th class="num">5</th></tr>
+          <tr><td>m1 jobs (after W1)</td><td class="num">5 (0)</td><td class="num">17 (3)</td><td class="num">29 (2)</td><td class="num"><b>203</b></td><td class="num"><b>1,345</b></td></tr>
+          <tr><td>video share</td><td class="num">1.00</td><td class="num">1.00</td><td class="num">1.00</td><td class="num">0.14</td><td class="num">0.02</td></tr>
+          <tr><td>expand / credits 30d</td><td class="num">4 / 1%</td><td class="num">14 / 7%</td><td class="num">21 / 12%</td><td class="num"><b>45 / 31%</b></td><td class="num"><b>73 / 48%</b></td></tr>
+          <tr><td>credits ARPU</td><td class="num">$0</td><td class="num">$2</td><td class="num">$3</td><td class="num">$21</td><td class="num">$62</td></tr>
+          <tr><td>used in M2</td><td class="num">10%</td><td class="num">38%</td><td class="num">46%</td><td class="num">73%</td><td class="num">91%</td></tr>
+        </table>
+        <div class="foot">Renewal sits in an 11-pp band while ARPU moves 6× and expansion 18× — <b>behavior is an expansion signal that only weakly predicts the auto-charge</b>.</div>
+      </div>
+    </div>
+
+    <div class="claim">Two structural reads, then the product impact.</div>
+    <p class="lede"><b>1–3 are one funnel, not a value ladder.</b> ARPU $22–34, renewal ~50% everywhere, post-W1 jobs 0/3/2; the failure point just moves: never returned → returned, no routine → routine, no money. All three enter for video (share = 1.00). <b>4–5 is volume, then mix:</b> jobs 29 → 203 → 1,345, video collapses to 0.14 → 0.02 — heavy users run image pipelines feeding video passes, and plan is the pay path, not the segment (Basic converts 42–83% on either route; Ultimate has no rung above and mostly does neither).</p>
+
+    <div class="grid5">
+      <div class="segcard"><div class="sn">SEG 1 · 30%</div><h3>One-shot</h3><p>Day 1, ~5 video jobs, expectations miss, gone in M1. 48% renew passively; 10% active in M2.</p>
+        <div class="treat"><b>PRODUCT TREATMENT</b>Blank prompt box replaced with pre-configured viral presets (choice of top-popular looks and motion controls); an inline AI enhancer restructures raw input into video-model syntax; a reduced new-user landing hides advanced options until the first success.</div></div>
+      <div class="segcard"><div class="sn">SEG 2 · 36%</div><h3>Weak week-1</h3><p>Returns after W1 but 2 active days, 17 jobs; 71% desktop. Every session starts from a blank box.</p>
+        <div class="treat"><b>PRODUCT TREATMENT</b>Home opens on their last clips and drafts with one-click variation/improvement instead of a blank box; a base of their own images and character photos usable as animation presets, bypassing text prompting; desktop drafts workspace resumes unfinished renders.</div></div>
+      <div class="segcard"><div class="sn">SEG 3 · 19%</div><h3>Habit, light</h3><p>3 W1 days, 5 M1 days, healthy routine that never shows up in money: credits $3, renewal 49%.</p>
+        <div class="treat"><b>PRODUCT TREATMENT</b>A library saving their own prompt templates, styles and camera settings for one-click reuse across projects; 3 days pre-renewal, a recap of best clips and features used, so the auto-charge becomes an informed yes.</div></div>
+      <div class="segcard"><div class="sn">SEG 4 · 12%</div><h3>Habit, heavy</h3><p>203 jobs, 86% image, 85% desktop — asset prep before video passes. $21 credits, 45% expand.</p>
+        <div class="treat"><b>PRODUCT TREATMENT</b>Lock a character and style across image and video generations; a node/timeline desktop canvas linking image gens into video tracks and grouping them into projects; prepaid credit bundles and a scoped upgrade modal monetize the flow.</div></div>
+      <div class="segcard"><div class="sn">SEG 5 · 3%</div><h3>Top usage</h3><p>1,345 jobs/mo, 98% image, near-API flows. $62/mo in top-ups, best renewal (59%).</p>
+        <div class="treat"><b>PRODUCT TREATMENT</b>A self-serve Max plan above Ultimate — bigger credit allotment, higher concurrency, priority queue, early model access; an in-canvas co-pilot that proposes and batch-runs the next pipeline step (edit still → variants → video); a Turbo/HQ model selector debiting credits by actual compute. Sell speed, don't cap volume.</div></div>
+    </div>
+    <div class="pagemark">02 / 07</div>
+  </div>
+</section>
+
+<!-- ======================= GATE 3: CHURN & LTV ======================= -->
+<section>
+  <div class="wrap">
+    <div class="gate">
+      <div><div class="gnum">PART 2 · LTV MODELING</div><h2>Churn, LTV, and the cost ceiling</h2></div>
+      <div class="decision go">DECISION: LTV $117, QUOTED AS $115–203</div>
+    </div>
+
+    <p class="lede"><b>Churn is defined on billing cycles, not calendar months.</b> Rebills land at days 30–32 (41.3pp of all renewals), there is no gap for a grace period to sit in, so the cycle boundary is the deadline. Churned at cycle m = no scheduled charge in cycle m, measured only on accounts whose cycle m fully elapsed; only 2.6% ever miss a cycle and pay again, so the strict rule isn't counting dunning gaps. Win-backs (median day 64, 4.7% of revenue) are recovered revenue, not retention. <b>Annual is excluded from churn</b>: 87.5% of annual accounts pay exactly once, so a monthly renewal is undefined for them — a blended number would credit retention nobody observed.</p>
+    <p class="note">Rejected: the dashboard formula 1 − A(t+1)/A(t) — negative in four of five months while real churn sat at 43–51%; it tracks acquisition. Chained renewal rates on at-risk denominators handle censoring with no survival model in between.</p>
+
+    <div class="cols2">
+      <div class="fig">
+        <div class="cap">REVENUE RETENTION BY CYCLE TRANSITION — expansion softens churn, never out-runs it</div>
+        <svg viewBox="0 0 460 210" role="img" aria-label="GRR and NRR by transition">
+          <g font-family="IBM Plex Mono" font-size="11" fill="#6B6E76">
+            <line x1="30" y1="20" x2="440" y2="20" stroke="#191A23" stroke-dasharray="3 4"/>
+            <text x="440" y="14" text-anchor="end" fill="#191A23">100%</text>
+            <!-- pairs: GRR indigo-soft, NRR indigo. scale 160px = 100% -->
+            <rect x="45"  y="106.4" width="34" height="73.6" fill="#D64524" opacity=".55"/>
+            <rect x="83"  y="88.8"  width="34" height="91.2" fill="#0B7A5E"/>
+            <rect x="145" y="84"    width="34" height="96"   fill="#D64524" opacity=".55"/>
+            <rect x="183" y="68"    width="34" height="112"  fill="#0B7A5E"/>
+            <rect x="245" y="71.2"  width="34" height="108.8" fill="#D64524" opacity=".55"/>
+            <rect x="283" y="45.6"  width="34" height="134.4" fill="#0B7A5E"/>
+            <rect x="345" y="79.2"  width="34" height="100.8" fill="#D64524" opacity=".55"/>
+            <rect x="383" y="44"    width="34" height="136"  fill="#0B7A5E"/>
+            <text x="62"  y="101" text-anchor="middle" fill="#191A23">46</text><text x="100" y="84" text-anchor="middle" fill="#191A23">57</text>
+            <text x="162" y="79"  text-anchor="middle" fill="#191A23">60</text><text x="200" y="63" text-anchor="middle" fill="#191A23">70</text>
+            <text x="262" y="66"  text-anchor="middle" fill="#191A23">68</text><text x="300" y="41" text-anchor="middle" fill="#191A23">84</text>
+            <text x="362" y="74"  text-anchor="middle" fill="#191A23">63</text><text x="400" y="39" text-anchor="middle" fill="#191A23">85</text>
+            <text x="81"  y="196" text-anchor="middle">0→1</text><text x="181" y="196" text-anchor="middle">1→2</text>
+            <text x="281" y="196" text-anchor="middle">2→3</text><text x="381" y="196" text-anchor="middle">3→4</text>
+            <text x="45" y="210" fill="#D64524">■ GRR</text><text x="105" y="210" fill="#0B7A5E">■ NRR</text>
+          </g>
+        </svg>
+        <div class="foot">NRR never crosses 100% with win-backs excluded → <b>upsell cannot substitute for fixing the first bill</b>. Also: of accounts that renewed once, only 46% generated anything in the cycle they just paid for — $89k, 36% of cycle-1 revenue, is dormant. An early-warning list, and a refund liability sitting inside GRR.</div>
+      </div>
+      <div class="fig">
+        <div class="cap">GROSS LTV — METHOD DECIDES THE ANSWER</div>
+        <table style="margin:0;border:none;font-size:13px">
+          <tr><th>method</th><th class="num">LTV</th><th>what it gets wrong</th></tr>
+          <tr><td class="mono">ARPU / churn</td><td class="num">$78</td><td>one churn rate for everybody, from the worst cycle, forever</td></tr>
+          <tr><td>retention × revenue, flat tail</td><td class="num">$312</td><td>the last observed cycle repeats — survival never decays</td></tr>
+          <tr><td><b>decaying tail, discounted</b></td><td class="num"><b>$117</b></td><td><b>chosen</b> — observed rates while a cycle holds 5% of the group, then tail at mean renewal of cycles 2+</td></tr>
+        </table>
+        <div class="foot">Discount 20%/yr, horizon 36 cycles — together they move the answer by $8. The assumed tail churn moves it by <b>$88</b> → quote LTV as <b>"$117, $115–203 depending on where churn settles."</b> 98% of LTV lands within 12 cycles, so a 12-month payback rule loses almost nothing. The argument to have is about the tail, not the discount rate.</div>
+      </div>
+    </div>
+
+    <div class="cols2">
+      <div class="fig">
+        <div class="cap">GROSS LTV BY SEGMENT — spread comes from revenue (6×), not survival (11pp)</div>
+        <svg viewBox="0 0 460 200" role="img" aria-label="LTV by segment 72 to 334 dollars">
+          <g font-family="IBM Plex Mono" font-size="11" fill="#6B6E76">
+            <rect x="120" y="16"  width="79"  height="22" fill="#4F46E5" opacity=".5"/>
+            <rect x="120" y="52"  width="114" height="22" fill="#4F46E5" opacity=".6"/>
+            <rect x="120" y="88"  width="120" height="22" fill="#4F46E5" opacity=".7"/>
+            <rect x="120" y="124" width="256" height="22" fill="#4F46E5" opacity=".85"/>
+            <rect x="120" y="160" width="330" height="22" fill="#4F46E5"/>
+            <text x="112" y="31"  text-anchor="end" fill="#191A23">one-shot</text>
+            <text x="112" y="67"  text-anchor="end" fill="#191A23">weak W1</text>
+            <text x="112" y="103" text-anchor="end" fill="#191A23">habit lt</text>
+            <text x="112" y="139" text-anchor="end" fill="#191A23">habit hv</text>
+            <text x="112" y="175" text-anchor="end" fill="#191A23">top usage</text>
+            <text x="205" y="31">$72</text><text x="240" y="67">$104</text><text x="246" y="103">$109</text>
+            <text x="382" y="139">$233</text><text x="404" y="175" fill="#191A23" font-weight="500">$334</text>
+          </g>
+        </svg>
+        <div class="foot">4.6× spread → <b>a single blended CAC target overpays for one-shot and underbids for top usage.</b> CAC ceilings per segment.</div>
+      </div>
+      <div class="fig">
+        <div class="cap">NET LTV — THE COST CEILING RUNS BACKWARDS (breakeven $/image job, video = 8× image)</div>
+        <svg viewBox="0 0 460 200" role="img" aria-label="Breakeven cost per image job by segment">
+          <g font-family="IBM Plex Mono" font-size="11" fill="#6B6E76">
+            <rect x="120" y="16"  width="330" height="22" fill="#D64524" opacity=".9"/>
+            <rect x="120" y="52"  width="125" height="22" fill="#D64524" opacity=".75"/>
+            <rect x="120" y="88"  width="116" height="22" fill="#D64524" opacity=".65"/>
+            <rect x="120" y="124" width="60"  height="22" fill="#D64524" opacity=".55"/>
+            <rect x="120" y="160" width="21"  height="22" fill="#D64524" opacity=".5"/>
+            <text x="112" y="31"  text-anchor="end" fill="#191A23">one-shot</text>
+            <text x="112" y="67"  text-anchor="end" fill="#191A23">weak W1</text>
+            <text x="112" y="103" text-anchor="end" fill="#191A23">habit lt</text>
+            <text x="112" y="139" text-anchor="end" fill="#191A23">habit hv</text>
+            <text x="112" y="175" text-anchor="end" fill="#191A23">top usage</text>
+            <text x="456" y="31" text-anchor="end" fill="#191A23" font-weight="500">$0.64</text>
+            <text x="251" y="67">$0.24</text><text x="242" y="103">$0.22</text>
+            <text x="186" y="139">$0.12</text><text x="147" y="175" fill="#191A23" font-weight="500">$0.04</text>
+          </g>
+        </svg>
+        <div class="foot">Cost per job and CAC are not in the data — a net-LTV figure would be an assumption dressed as a result. What <i>can</i> be computed exactly: the compute cost at which each segment stops paying for itself. 16× spread, reverse order of LTV: <b>if cost/image ≈ $0.01, top usage is the best customer; above ~$0.04 it is sold at a loss while one-shot stays profitable.</b> Get cost per generation before scaling acquisition of heavy users.</div>
+      </div>
+    </div>
+    <div class="pagemark">03 / 07</div>
+  </div>
+</section>
+
+<!-- ======================= GATE 4: HISTORICAL ======================= -->
+<section>
+  <div class="wrap">
+    <div class="gate">
+      <div><div class="gnum">PART 2 · HISTORICAL ANALYSIS</div><h2>How the segments moved</h2></div>
+      <div class="decision hold">OPEN: CHECK PLAN MIX BY COHORT</div>
+    </div>
+    <p class="lede">Aggregate ARPU falling has two causes with opposite fixes — <b>mix shift</b> (acquisition brings different people) or <b>within-segment decay</b> (the same people are worth less). Decomposed symmetrically, no interaction term to argue about. The sign flips with the baseline: April is the launch month (1,181 accounts), so anchoring a trend on it manufactures a decline. <b>Honest reading: ARPU roughly flat since May.</b></p>
+
+    <div class="cols2">
+      <div class="fig">
+        <div class="cap">HABIT-HEAVY: SHARE ×3, ARPU −42% — what both windows agree on</div>
+        <svg viewBox="0 0 460 210" role="img" aria-label="Heavy segment ARPU by cohort, 121 to 70 dollars">
+          <g font-family="IBM Plex Mono" font-size="11" fill="#6B6E76">
+            <polyline points="60,40 155,55 250,110 345,146 440,116" fill="none" stroke="#D64524" stroke-width="2.5"/>
+            <circle cx="60" cy="40" r="4" fill="#D64524"/><circle cx="155" cy="55" r="4" fill="#D64524"/>
+            <circle cx="250" cy="110" r="4" fill="#D64524"/><circle cx="345" cy="146" r="4" fill="#D64524"/>
+            <circle cx="440" cy="116" r="4" fill="#D64524"/>
+            <text x="60" y="28" text-anchor="middle" fill="#191A23">$121</text>
+            <text x="345" y="166" text-anchor="middle">$52</text>
+            <text x="440" y="104" text-anchor="middle" fill="#191A23">$70</text>
+            <text x="60" y="200" text-anchor="middle">Apr</text><text x="155" y="200" text-anchor="middle">May</text>
+            <text x="250" y="200" text-anchor="middle">Jun</text><text x="345" y="200" text-anchor="middle">Jul</text>
+            <text x="440" y="200" text-anchor="middle">Aug</text>
+            <text x="60" y="14" fill="#6B6E76">heavy share of cohort: 5% → 17%; other segments flat ($21 / $32 / $131–140)</text>
+          </g>
+        </svg>
+        <div class="foot">Heavy users arrive in far greater numbers and each is worth less. Two explanations, opposite fixes: self-selection onto cheaper plans (packaging) vs wider acquisition reaching a less committed audience (channel). The $70-vs-$121 gap ≈ one plan tier, which favours packaging — <b>plan mix by cohort settles it</b>; if packaging, reprice the heavy tier.</div>
+      </div>
+      <div class="fig">
+        <div class="cap">FIRST RENEWAL BY COHORT — 58% → 48% (±1–3pp)</div>
+        <svg viewBox="0 0 460 210" role="img" aria-label="First renewal by cohort declining from 58 to 48 percent">
+          <g font-family="IBM Plex Mono" font-size="11" fill="#6B6E76">
+            <polyline points="60,50 155,114 250,106 345,98 440,130" fill="none" stroke="#4F46E5" stroke-width="2.5"/>
+            <circle cx="60" cy="50" r="4" fill="#4F46E5"/><circle cx="155" cy="114" r="4" fill="#4F46E5"/>
+            <circle cx="250" cy="106" r="4" fill="#4F46E5"/><circle cx="345" cy="98" r="4" fill="#4F46E5"/>
+            <circle cx="440" cy="130" r="4" fill="#4F46E5"/>
+            <text x="60" y="38" text-anchor="middle" fill="#191A23">58%</text>
+            <text x="155" y="134" text-anchor="middle">50%</text><text x="250" y="126" text-anchor="middle">51%</text>
+            <text x="345" y="88" text-anchor="middle">52%</text>
+            <text x="440" y="150" text-anchor="middle" fill="#191A23">48%</text>
+            <text x="60" y="200" text-anchor="middle">Apr</text><text x="155" y="200" text-anchor="middle">May</text>
+            <text x="250" y="200" text-anchor="middle">Jun</text><text x="345" y="200" text-anchor="middle">Jul</text>
+            <text x="440" y="200" text-anchor="middle">Aug</text>
+          </g>
+        </svg>
+        <div class="foot">Cohorts differ on <b>level, not shape</b> — rescaled to their own M1, curves sit within 6–9pp, so the difference is customer quality, not how survivors decay. Consequence for planning: <b>the $117 LTV is a backward-looking average; on August's traffic it comes out lower, and that is the number for CAC decisions today.</b></div>
+      </div>
+    </div>
+    <div class="pagemark">04 / 07</div>
+  </div>
+</section>
+
+<!-- ======================= GATE 5: SO WHAT ======================= -->
+<section>
+  <div class="wrap">
+    <div class="gate">
+      <div><div class="gnum">PART 3 · SO WHAT?</div><h2>Evidence → focus → bets</h2></div>
+      <div class="decision go">DECISION: 5 BETS</div>
+    </div>
+
+    <div class="claim">A — what the tested hypotheses established</div>
+    <table style="max-width:860px">
+      <tr><th>evidence (Part 1 tests / Part 2 model)</th><th>effect</th><th>consequence</th></tr>
+      <tr><td>First-bill churn is 49% and <b>proportional across segments</b>; behavior buys 11pp of renewal but 6× ARPU and 18× expansion</td><td class="num">0.07 vs 0.56–0.76</td><td>renewal is one shared problem; <b>segments are an expansion tool</b></td></tr>
+      <tr><td>Habit is real: W1 active days, short gaps, spaced &gt; binge all supported; 9–5 "professional", prompt length, 24h rule all failed</td><td class="num">0.05–0.07 / ns</td><td>segment on days + volume + mix — nothing else survived</td></tr>
+      <tr><td>Expansion follows volume and the plan ladder: top-20% M1 jobs, end-cycle spike, MoM growth, expand-early→expand-again</td><td class="num">0.16–0.29</td><td>monetization bets aim at 4–5, where the signals live</td></tr>
+      <tr><td>Cost ceiling runs backwards to LTV ($0.64 → $0.04 per image)</td><td class="num">16×</td><td>every volume-raising bet carries a margin check</td></tr>
+    </table>
+
+    <div class="claim">B — therefore, one metric per segment</div>
+    <table style="max-width:860px">
+      <tr><th>seg</th><th>diagnosed failure</th><th>lever</th><th>target metric</th><th>guardrail</th></tr>
+      <tr><td class="mono">1</td><td>never returns after day 1</td><td>conversion</td><td>conversion to an active W1: share with ≥2 days holding a completed-and-downloaded generation</td><td>D1 conversion to first render</td></tr>
+      <tr><td class="mono">2</td><td>returns, no routine</td><td>churn</td><td>first-bill churn via habit: M1 active days 2 → 5</td><td>paid renewal ≥ 51%</td></tr>
+      <tr><td class="mono">3</td><td>routine, no money or commitment</td><td>churn</td><td>M2 active rate — the honest read of a 49% auto-charge renewal</td><td>contribution margin per user</td></tr>
+      <tr><td class="mono">4</td><td>expands through the wrong channel</td><td>ARPPU</td><td>30d expansion ARPPU (credits + upgrades) $21 → $30</td><td>gross margin / compute per active user</td></tr>
+      <tr><td class="mono">5</td><td>volume outgrew the plan ladder</td><td>ARPPU</td><td>credit + top-tier ARPPU $62 → $90 at protected margin</td><td>churn (59% renewal), LTV</td></tr>
+    </table>
+
+    <div class="claim">C — the product hypotheses, all of them, per segment (I·C·E, winner bolded)</div>
+    <div class="twocol-list">
+      <div class="panel">
+        <h3><span class="mono" style="color:var(--muted);font-size:11px">SEG 1 · ONE-SHOT · 30%</span><br>Fix the first generation</h3>
+        <ul>
+          <li><b>Generation presets</b> — blank prompt box replaced for new users with pre-configured viral presets; choice out of top-popular looks and motion controls <span class="mono">8·7·3</span></li>
+          <li><b>Prompt enhancer</b> — inline AI suggestion restructuring raw input into video-model syntax; upsell candidate for higher tiers <span class="mono">8·6·3</span></li>
+          <li>Fast-render mode — picture previews of key video moments before spending full credits, so iteration happens inside the one session <span class="mono">7·5·5</span></li>
+          <li>Easier UI — special landing for new users with fewer options, cutting the mental load before the first try <span class="mono">6·5·5</span></li>
+          <li>Onboarding tour — 3 steps on first login: idea → prompt → parameters <span class="mono">5·4·4</span></li>
+          <li>Re-engagement — day-3 email with their own first clip, a high-performing prompt in the same style, and one free retry <span class="mono">3·3·2</span></li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3><span class="mono" style="color:var(--muted);font-size:11px">SEG 2 · WEAK WEEK-1 · 36%</span><br>Kill the cold start</h3>
+        <ul>
+          <li><b>Continue-your-project widget</b> — home opens on their last clips and drafts with one-click variation/improvement instead of a blank box <span class="mono">8·6·4</span></li>
+          <li><b>Image-to-video</b> — a base of their own images and character photos used as animation presets, bypassing text prompting <span class="mono">7·6·4</span></li>
+          <li>Project workspace &amp; drafts UI — desktop manager saving unfinished renders and prompts for seamless resume (71% desktop) <span class="mono">6·6·4</span></li>
+          <li>1-click camera re-angle — same scene, new motion, no prompt rewrite; one idea becomes several jobs <span class="mono">5·5·3</span></li>
+          <li>Desktop push — alert when a long render finishes, so a sparse session doesn't end at the wait <span class="mono">4·5·3</span></li>
+          <li>Weekly trend templates — rotating prompt packs built from platform usage and new releases <span class="mono">4·4·3</span></li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3><span class="mono" style="color:var(--muted);font-size:11px">SEG 3 · HABIT, LIGHT · 19%</span><br>Turn routine into commitment</h3>
+        <ul>
+          <li><b>Saved custom styles library</b> — their own prompt templates, styles and settings saved for one-click reuse across projects; raises switching cost <span class="mono">8·6·4</span></li>
+          <li>Month-in-review — 3 days pre-renewal: best clips and features used, then the renew choice <span class="mono">5·4·2</span></li>
+          <li>Renewal promotion — recap "you made X clips in Y sessions" + subscription offer at M1 renewal <span class="mono">4·4·2</span></li>
+          <li>Credit top-up prompt — contextual pack when remaining credits drop below 20% of quota <span class="mono">3·4·2</span></li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3><span class="mono" style="color:var(--muted);font-size:11px">SEG 4 · HABIT, HEAVY · 12%</span><br>Build the pipeline they already run</h3>
+        <ul>
+          <li><b>Character &amp; asset consistency</b> — lock a character and style across image/video generations; 86% image share is asset prep before video passes <span class="mono">8·8·6</span></li>
+          <li><b>Storyboard canvas</b> — node/timeline desktop UI linking image gens into video tracks and segmenting them into projects <span class="mono">7·7·6</span></li>
+          <li>Credit bundle pricing — bigger prepaid packs at better rates ($50/$100), surfaced to repeat top-uppers <span class="mono">3·5·2</span></li>
+          <li>Scoped upgrade promo — modal only after 2 consecutive months of top-ups above the next-tier gap, Pro+ only, showing the personal math <span class="mono">3·4·2</span></li>
+        </ul>
+      </div>
+      <div class="panel" style="grid-column:1/-1">
+        <h3><span class="mono" style="color:var(--muted);font-size:11px">SEG 5 · TOP USAGE · 3%</span><br>Sell speed and headroom, don't cap volume — B2C only, no enterprise motion</h3>
+        <ul>
+          <li><b>Self-serve Max tier above Ultimate</b> — new top consumer plan: big credit allotment, higher concurrency, priority queue, early model access; upsell banner where the ladder ends <span class="mono">8·7·3 → 18.7</span></li>
+          <li><b>Co-pilot workflow</b> — in-canvas assistant that proposes and batch-runs the next pipeline step (edit still → variants → video), with MCP connectors <span class="mono">8·7·4 → 14.0</span></li>
+          <li>AI image-reference improvement — VLM feature suggesting edits to photos attached as references, improving video quality at the main step of their flow <span class="mono">8·6·4 → 12.0</span></li>
+          <li>Automatic scenario generation — builds a scenario from input images and the context of previous work <span class="mono">7·6·4 → 10.5</span></li>
+          <li>Model efficiency selector — user-chosen Turbo vs HQ models, credits debited by actual compute; explicit choice, not auto-routing <span class="mono">6·6·4 → 9.0</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="claim">The queue — product bets first; marketing (promos, recaps, packs) parked, they leave the product unchanged</div>
+    <table>
+      <tr><th>#</th><th>bet</th><th>seg</th><th>moves</th><th>know first</th></tr>
+      <tr><td class="mono">1</td><td>First-generation experience (presets + enhancer, 3-arm A/B)</td><td>1</td><td>W1 completed-generation days on 30% of base, 48% renewal</td><td>day-1 output &amp; cancel-rate stats</td></tr>
+      <tr><td class="mono">2</td><td>Max tier + co-pilot</td><td>5</td><td>$62/mo top-ups → plan; ~$100–170k/yr</td><td>fake-door: priceable above top-up spend</td></tr>
+      <tr><td class="mono">3</td><td>Continue-your-project + image-to-video</td><td>2</td><td>M1 days 2 → 5 on 36% of base</td><td>session 1 leaves something to continue</td></tr>
+      <tr><td class="mono">4</td><td>Saved styles library</td><td>3</td><td>M2 active on a 49% renewal</td><td>reuse behavior already observable</td></tr>
+      <tr><td class="mono">5</td><td>Production pipeline (consistency + canvas)</td><td>4</td><td>expansion ARPU of the 12% paying $71</td><td><b>cost/generation — breakeven $0.12/image</b></td></tr>
+    </table>
+    <div class="pagemark">05 / 07</div>
+  </div>
+</section>
+
+<!-- ======================= CONSTRAINTS ======================= -->
+<section>
+  <div class="wrap">
+    <div class="gate">
+      <div><div class="gnum">CONSTRAINTS &amp; LIMITATIONS</div><h2>What this study cannot claim</h2></div>
+      <div class="decision hold">READ BEFORE ACTING ON THE NUMBERS</div>
+    </div>
+    <table>
+      <tr><th>limitation</th><th>consequence</th><th>handled by</th></tr>
+      <tr><td><b>CAC, cost per generation, and API fees are not in the data</b></td><td>net LTV is uncomputable — any figure would be an assumption dressed as a result; the video/image cost ratio is assumed 8×</td><td>computed the exact breakeven cost ceiling per segment instead; cost per generation is the first number to request</td></tr>
+      <tr><td><b>Everyone in the data already pays</b></td><td>no signup → subscribe funnel, so acquisition — 50% of revenue — is out of scope</td><td>focus set on retention and expansion, which multiply the whole base</td></tr>
+      <tr><td><b>Six months of billing, April is the launch month</b></td><td>five observed cycles cannot speak for thirty-six: the tail assumption moves LTV 1.8× ($115–203); trends anchored on April manufacture a decline</td><td>LTV quoted as a range; trends read from May; one more quarter of data roughly halves the range</td></tr>
+      <tr><td><b>Annual renewal is unobservable</b> — 87.5% of annual accounts pay exactly once</td><td>a blended churn number would credit retention nobody has observed</td><td>annual excluded from churn and LTV, kept in the mix analysis (~10% of every segment)</td></tr>
+      <tr><td><b>Hypothesis tests are observational</b> — Mann–Whitney / χ² effects on historical behavior</td><td>supported ≠ causal: heavy users expand more does not mean making users heavy makes them expand</td><td>segments used for targeting and sizing only; every product bet ships behind an A/B with its own guardrail</td></tr>
+      <tr><td><b>Definition proxies</b> — no real quota field (quota_burn built from p75 of plan), hours in UTC not local, prompts measured in characters</td><td>work-hours and quota findings carry measurement noise; the 9–5 test may partly be a timezone artifact</td><td>none of these features survived into the final cut — segmentation rests on days, volume, gaps, and modality only</td></tr>
+      <tr><td><b>Segments 1–3 differ mainly on the cut variable</b> (week-1 days)</td><td>on money and post-W1 volume they are nearly identical — three types would be an overclaim</td><td>treated explicitly as one funnel in three stages sharing one North-Star (M2 active), with stage-specific fixes</td></tr>
+    </table>
+    <div class="pagemark">06 / 07</div>
+  </div>
+</section>
+
+<!-- ======================= FOOTER ======================= -->
+<footer>
+  <div class="wrap">
+    <div class="pagemark">07 / 07 — end of summary</div>
+  </div>
+</footer>
+
+</body>
+</html>
