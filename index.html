@@ -83,6 +83,16 @@
   .panel li:last-child{border-bottom:none}
   .panel li .mono{font-size:12px;color:var(--muted)}
 
+  details{background:var(--card);border:1px solid var(--line);border-radius:8px;margin:14px 0;max-width:860px}
+  details summary{cursor:pointer;font-family:"IBM Plex Mono",monospace;font-size:12.5px;letter-spacing:.04em;color:var(--indigo);padding:12px 16px;user-select:none}
+  details[open] summary{border-bottom:1px solid var(--line)}
+  details .dbody{padding:14px 18px;font-size:14px}
+  details .dbody p{margin:0 0 10px;max-width:none}
+  details .dbody .formula{font-family:"IBM Plex Mono",monospace;font-size:13px;background:#F4F4EF;border:1px solid var(--line);border-radius:6px;padding:10px 14px;margin:10px 0;overflow-x:auto}
+  .conclusions{list-style:none;max-width:860px;margin:14px 0 6px}
+  .conclusions li{padding:8px 0 8px 26px;position:relative;font-size:15px;border-bottom:1px dashed var(--line)}
+  .conclusions li:last-child{border-bottom:none}
+  .conclusions li::before{content:"→";position:absolute;left:0;color:var(--indigo);font-family:"IBM Plex Mono",monospace}
   footer{border-top:3px solid var(--ink);padding:28px 0 60px;margin-top:20px}
   footer p{max-width:760px}
   .pagemark{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);text-align:right;padding-top:8px}
@@ -174,12 +184,17 @@
 
     <table style="max-width:760px">
       <tr><th>driver</th><th>behaviour</th><th>share of revenue</th><th>call</th></tr>
-      <tr><td>Acquired</td><td>additive</td><td>50%</td><td>out of scope — the unpaid funnel is not in the data</td></tr>
-      <tr><td><b>Retained</b></td><td><b>compounds monthly</b></td><td>28%</td><td><b>focus 1</b></td></tr>
-      <tr><td><b>Expanded</b></td><td><b>compounds on survivors</b></td><td>19%</td><td><b>focus 2</b></td></tr>
-      <tr><td>Recovered</td><td>additive, small</td><td>3%</td><td>too small</td></tr>
+      <tr><td>Acquisition</td><td>additive</td><td>50%</td><td>out of scope — the unpaid funnel is not in the data</td></tr>
+      <tr><td><b>Retention</b></td><td><b>compounds monthly</b></td><td>28%</td><td><b>focus 1</b></td></tr>
+      <tr><td><b>Expansion</b></td><td><b>compounds on survivors</b></td><td>19%</td><td><b>focus 2</b></td></tr>
+      <tr><td>Recovery</td><td>additive, small</td><td>3%</td><td>too small</td></tr>
     </table>
     <p class="note">New revenue dominating means the business currently runs on acquisition; retained and expanded dollars multiply the whole base every month, which is why they are the levers even at smaller shares.</p>
+
+    <div class="claim">Retention &amp; expansion — final definitions and what the analysis found</div>
+    <p class="lede"><b>Retention.</b> Renewal is measured on 30-day billing cycles (grid shifted 2 days so short calendar months land right), no grace period — rebills pile at days 30–32 and the distribution has no gap for one to sit in. A renewal is a non-reactivation subscription charge inside the cycle; win-backs (median day 64) are recovered revenue, not retention. Annual is excluded — 87.5% pay exactly once, so a monthly renewal is undefined for them. <b>Result: first renewal 51%, then 69–81% — one cliff, then a plateau.</b> The first 30 days carry the highest churn, the largest sample, and are earliest to act on.</p>
+    <p class="lede"><b>Expansion.</b> Two routes, treated separately: subscription upgrades ($211k, n=3,306, ladder Basic &lt; Pro &lt; Ultimate &lt; Creator) and credit top-ups ($195k, n=6,773, plan-independent). Both happen early — medians inside the first ~3 weeks, Basic upgrades same-day (wrong plan at signup). <b>Result: expansion follows month-1 volume and ladder position, and behavior predicts it 4–6× more strongly than it predicts renewal.</b></p>
+    <p class="lede"><b>Why these CJM steps.</b> The paid journey is pay → first generation → week-1 habit → month-1 habit → (expansion) → first renewal → stay. Week 1 is the early signal — fast to measure, and ≥3 active days is the first threshold with materially higher subsequent engagement. Month 1 is the path to the renewal at ~day 30 — days and gaps over the full month predict it better than week 1 alone. Effectively all of the retention uplift available in this data is concentrated in the first 30 days, which is why every activation and habit bet below targets W1 and M1, not later cycles.</p>
     <div class="pagemark">01 / 07</div>
   </div>
 </section>
@@ -265,21 +280,41 @@
         <div class="foot">66% show up 0–2 days. Expansion is ~7% at 0–1 days, steps at 2, then a slope — no cliff. ≥2 would call 59% "habit"; ≥4 dumps 2.7k people who expand at 22% into weak week-1. 3 is the first repeated return.</div>
       </div>
       <div class="fig">
-        <div class="cap">BEHAVIORAL LOGIC — WHAT ACTUALLY DIFFERS</div>
-        <table style="margin:0;border:none;font-size:13px">
-          <tr><th></th><th class="num">1</th><th class="num">2</th><th class="num">3</th><th class="num">4</th><th class="num">5</th></tr>
-          <tr><td>m1 jobs (after W1)</td><td class="num">5 (0)</td><td class="num">17 (3)</td><td class="num">29 (2)</td><td class="num"><b>203</b></td><td class="num"><b>1,345</b></td></tr>
-          <tr><td>video share</td><td class="num">1.00</td><td class="num">1.00</td><td class="num">1.00</td><td class="num">0.14</td><td class="num">0.02</td></tr>
-          <tr><td>expand / credits 30d</td><td class="num">4 / 1%</td><td class="num">14 / 7%</td><td class="num">21 / 12%</td><td class="num"><b>45 / 31%</b></td><td class="num"><b>73 / 48%</b></td></tr>
-          <tr><td>credits ARPU</td><td class="num">$0</td><td class="num">$2</td><td class="num">$3</td><td class="num">$21</td><td class="num">$62</td></tr>
-          <tr><td>used in M2</td><td class="num">10%</td><td class="num">38%</td><td class="num">46%</td><td class="num">73%</td><td class="num">91%</td></tr>
-        </table>
-        <div class="foot">Renewal sits in an 11-pp band while ARPU moves 6× and expansion 18× — <b>behavior is an expansion signal that only weakly predicts the auto-charge</b>.</div>
+        <div class="cap">WHY THE TOP SEGMENT IS A LORENZ CUT, NOT A PERCENTILE</div>
+        <svg viewBox="0 0 460 190" role="img" aria-label="Lorenz curve of job concentration">
+          <g font-family="IBM Plex Mono" font-size="11" fill="#6B6E76">
+            <line x1="40" y1="170" x2="420" y2="20" stroke="#6B6E76" stroke-dasharray="4 4"/>
+            <path d="M 40 170 C 220 168, 330 160, 375 120 C 400 92, 412 50, 420 20" fill="none" stroke="#4F46E5" stroke-width="2.5"/>
+            <line x1="40" y1="170" x2="420" y2="170" stroke="#E4E4DE"/>
+            <line x1="40" y1="170" x2="40" y2="20" stroke="#E4E4DE"/>
+            <text x="230" y="186" text-anchor="middle">share of users (sorted by jobs)</text>
+            <text x="120" y="150" fill="#4F46E5">bottom 74% → 7.4% of jobs</text>
+            <text x="290" y="46" fill="#191A23">top 3% → 50% of jobs (≥787)</text>
+            <text x="150" y="80" transform="rotate(-21 150 80)">equality</text>
+          </g>
+        </svg>
+        <div class="foot"><b>Percentile cuts count people; a Lorenz cut counts weight.</b> Segment 5 is defined as the fewest users who jointly carry half the workload (floor p95, so the label stays an extreme tail) — the group whose compute cost actually moves the P&amp;L, which is exactly why the segment exists.</div>
       </div>
     </div>
 
-    <div class="claim">Two structural reads, then the product impact.</div>
-    <p class="lede"><b>1–3 are one funnel, not a value ladder.</b> ARPU $22–34, renewal ~50% everywhere, post-W1 jobs 0/3/2; the failure point just moves: never returned → returned, no routine → routine, no money. All three enter for video (share = 1.00). <b>4–5 is volume, then mix:</b> jobs 29 → 203 → 1,345, video collapses to 0.14 → 0.02 — heavy users run image pipelines feeding video passes, and plan is the pay path, not the segment (Basic converts 42–83% on either route; Ultimate has no rung above and mostly does neither).</p>
+    <div class="claim">The full segment profile</div>
+    <table>
+      <tr><th></th><th class="num">1 one-shot</th><th class="num">2 weak W1</th><th class="num">3 habit light</th><th class="num">4 habit heavy</th><th class="num">5 top usage</th></tr>
+      <tr><td>ARPU_meq</td><td class="num">$22</td><td class="num">$31</td><td class="num">$34</td><td class="num">$71</td><td class="num">$138</td></tr>
+      <tr><td>credits ARPU</td><td class="num">$0</td><td class="num">$2</td><td class="num">$3</td><td class="num">$21</td><td class="num">$62</td></tr>
+      <tr><td>paid renewal</td><td class="num">48%</td><td class="num">51%</td><td class="num">49%</td><td class="num">55%</td><td class="num">59%</td></tr>
+      <tr><td>used after W1 / M2</td><td class="num">0 / 10%</td><td class="num">62 / 38%</td><td class="num">60 / 46%</td><td class="num">89 / 73%</td><td class="num">98 / 91%</td></tr>
+      <tr><td>w1 / m1 days</td><td class="num">1 / 1</td><td class="num">2 / 2</td><td class="num">3 / 5</td><td class="num">4 / 10</td><td class="num">6 / 18</td></tr>
+      <tr><td>m1 jobs (after W1)</td><td class="num">5 (0)</td><td class="num">17 (3)</td><td class="num">29 (2)</td><td class="num"><b>203 (75)</b></td><td class="num"><b>1,345 (864)</b></td></tr>
+      <tr><td>expand / up / credits</td><td class="num">4 / 3 / 1%</td><td class="num">14 / 9 / 7%</td><td class="num">21 / 10 / 12%</td><td class="num">45 / 24 / 31%</td><td class="num">73 / 47 / 48%</td></tr>
+      <tr><td>jobs per $</td><td class="num">0.3</td><td class="num">0.9</td><td class="num">1.1</td><td class="num">4.5</td><td class="num">20.6</td></tr>
+    </table>
+    <ul class="conclusions">
+      <li><b>Renewal barely separates the segments — monetization does.</b> The whole base sits in a 48–59% renewal band while ARPU moves 6× ($22 → $138) and expansion 18× (4% → 73%): behavior is an expansion signal that only weakly predicts the auto-charge.</li>
+      <li><b>1–3 are one funnel, not a value ladder.</b> ARPU $22–34, renewal ~50% everywhere, post-W1 jobs 0/3/2, all-video — the failure point just moves: never returned → returned, no routine → routine, no money.</li>
+      <li><b>4–5 is volume, then mix — and plan is the pay path.</b> Jobs 29 → 203 → 1,345 while video collapses 1.00 → 0.14 → 0.02: heavy users run image pipelines feeding video passes, and where the money goes depends on the plan rung (Basic converts on both routes, Ultimate has none above and mostly does neither).</li>
+    </ul>
+    <div class="claim">Product impact by segment</div>
 
     <div class="grid5">
       <div class="segcard"><div class="sn">SEG 1 · 30%</div><h3>One-shot</h3><p>Day 1, ~5 video jobs, expectations miss, gone in M1. 48% renew passively; 10% active in M2.</p>
@@ -347,6 +382,25 @@
       </div>
     </div>
 
+    <details>
+      <summary>DEFINITIONS — GRR &amp; NRR, THE MATH</summary>
+      <div class="dbody">
+        <p>Take <b>B</b> = the subscription revenue of the accounts entering a cycle. Over the transition three things can happen to those dollars: some leave entirely (<b>churned</b> accounts), some shrink (<b>contraction</b> — downgrades, e.g. the annual → monthly people at ~day 92), and some grow (<b>expansion</b> — upgrades, and here credit top-ups too).</p>
+        <div class="formula">GRR = (B − churned − contraction) / B &nbsp;&nbsp;·&nbsp;&nbsp; NRR = GRR + expansion / B</div>
+        <p><b>GRR</b> is what survives of the <i>original</i> money — it can only go down, 100% is its ceiling, and nothing sold to survivors can flatter it. <b>NRR</b> adds survivors' extra spending back and can exceed 100% ("net negative churn": survivors expand faster than leavers churn and the base grows without a single new customer). Measured on billing cycles so renewals don't smear across calendar boundaries; win-backs excluded as recovery. Here NRR peaks at 85% and never reaches the line — which is the quantitative form of "upsell cannot substitute for fixing the first bill."</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>DEFINITIONS — GROSS LTV: FORMULA, 36-CYCLE HORIZON, WHY NO SURVIVAL MODEL</summary>
+      <div class="dbody">
+        <div class="formula">LTV<sub>gross</sub> = Σ<sub>m=0..36</sub> r<sub>m</sub> · S(m) / (1+d)<sup>m</sup></div>
+        <p><b>r<sub>m</sub></b> — observed revenue per surviving customer in cycle m, subscription + credits, so expansion sits inside LTV. <b>S(m)</b> — the chained renewal curve: each cycle's rate read off the accounts that actually reached it, multiplied up; accounts too young to face a renewal leave the denominator, which handles censoring by construction. <b>d</b> — 20%/yr, applied monthly.</p>
+        <p><b>Why cap at 36 cycles:</b> the horizon isn't what the number rests on — the present-value curve is flat well before cycle 36 and 98% of LTV lands within 12 cycles; 36 is a generous ceiling that costs nothing. Discount × horizon together move the answer by $8; the assumed tail churn moves it by $88, so the range ($115–203) is quoted on the tail, not the discount.</p>
+        <p><b>Why not fit a survival model on 6 months of data:</b> five observable cycles cannot identify a 36-cycle parametric curve — with clean billing data the empirical chained rates <i>are</i> the Kaplan–Meier estimate, and a fitted tail (shifted-beta-geometric, Weibull) would make the same tail assumption while hiding it inside a distribution choice. The explicit rule instead: read a cycle off the data while it still holds ≥5% of the group; past that, hold revenue flat and decay survival at the mean renewal rate of cycles 2+ (cycle 1 excluded as a different regime — the 49% cliff never repeats). When more data arrives, the honest upgrades are: one more quarter of billing (halves the range), then sBG on 9–12 observed cycles, then per-segment tails.</p>
+      </div>
+    </details>
+
     <div class="cols2">
       <div class="fig">
         <div class="cap">GROSS LTV BY SEGMENT — spread comes from revenue (6×), not survival (11pp)</div>
@@ -390,6 +444,17 @@
         <div class="foot">Cost per job and CAC are not in the data — a net-LTV figure would be an assumption dressed as a result. What <i>can</i> be computed exactly: the compute cost at which each segment stops paying for itself. 16× spread, reverse order of LTV: <b>if cost/image ≈ $0.01, top usage is the best customer; above ~$0.04 it is sold at a loss while one-shot stays profitable.</b> Get cost per generation before scaling acquisition of heavy users.</div>
       </div>
     </div>
+    <details>
+      <summary>DEFINITIONS — NET LTV, THE BREAKEVEN INVERSION, AND THE ~3.5% FEE</summary>
+      <div class="dbody">
+        <div class="formula">LTV<sub>net</sub> = Σ<sub>m</sub> [ r<sub>m</sub>(1−f) − c<sub>img</sub>·g<sup>img</sup><sub>m</sub> − c<sub>vid</sub>·g<sup>vid</sup><sub>m</sub> ] · S(m)/(1+d)<sup>m</sup> − CAC</div>
+        <p>Per cycle: revenue after payment fees (f), minus image-compute cost (cost per image job × image jobs) and video-compute cost, weighted by survival, discounted; CAC off the top. Of the inputs, r<sub>m</sub>, S(m) and the job counts g are in the data; <b>c<sub>img</sub>, c<sub>vid</sub> and CAC are not</b> — so a net-LTV number would be an assumption dressed as a result.</p>
+        <p><b>The inversion:</b> instead of assuming cost and computing profit, set net value to zero and solve for the one unknown — the compute price at which a segment exactly pays for itself:</p>
+        <div class="formula">c*<sub>img</sub> = [ Σ r<sub>m</sub>(1−f)·S(m)/(1+d)<sup>m</sup> ] / [ Σ (g<sup>img</sup><sub>m</sub> + k·g<sup>vid</sup><sub>m</sub>)·S(m)/(1+d)<sup>m</sup> ] , &nbsp; k = c<sub>vid</sub>/c<sub>img</sub> = 8</div>
+        <p>Numerator = discounted, survival-weighted lifetime revenue after fees; denominator = the same weighting applied to cost-weighted jobs, with k collapsing two job types into one unit (a video priced as 8 images — the second number for finance to confirm). Below c* a segment is profitable, above it it's sold at a loss — no assumption about the actual cost is needed to compute the threshold. Result: $0.64 / $0.24 / $0.22 / $0.12 / $0.04 — a 16× spread in the reverse order of LTV.</p>
+        <p><b>Where ~3.5% comes from:</b> f models payment-processor take (Stripe-tier pricing ≈ 2.9% + $0.30 per charge). On this ticket mix — $14 Basic to $43 Pro monthly, plus credit packs — the fixed 30¢ adds ~0.7–2pp on top of 2.9%, netting out around 3.5% blended. It's called "knowable" because it's a published market rate, not internal data; and at 3.5% it moves every breakeven by under 4%, so it exists for honesty (revenue Higgsfield keeps), not to change a conclusion.</p>
+      </div>
+    </details>
     <div class="pagemark">03 / 07</div>
   </div>
 </section>
@@ -402,6 +467,46 @@
       <div class="decision hold">OPEN: CHECK PLAN MIX BY COHORT</div>
     </div>
     <p class="lede">Aggregate ARPU falling has two causes with opposite fixes — <b>mix shift</b> (acquisition brings different people) or <b>within-segment decay</b> (the same people are worth less). Decomposed symmetrically, no interaction term to argue about. The sign flips with the baseline: April is the launch month (1,181 accounts), so anchoring a trend on it manufactures a decline. <b>Honest reading: ARPU roughly flat since May.</b></p>
+
+    <div class="claim">The decomposition — symmetric, so mix + value sum exactly to ΔARPU</div>
+    <p class="mono" style="font-size:13.5px;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:12px 16px;max-width:860px">ΔARPU = Σ<sub>s</sub> (w<sub>s</sub>¹ − w<sub>s</sub>⁰) · (v<sub>s</sub>⁰+v<sub>s</sub>¹)/2 &nbsp;[mix]&nbsp; + &nbsp;Σ<sub>s</sub> (w<sub>s</sub>⁰+w<sub>s</sub>¹)/2 · (v<sub>s</sub>¹ − v<sub>s</sub>⁰) &nbsp;[value]</p>
+    <p class="note">w<sub>s</sub> = segment share, v<sub>s</sub> = segment ARPU. Each change is priced at the midpoint of the other variable, so there is no interaction residual to park inconvenient dollars in, and the split doesn't depend on which period is called the base.</p>
+
+    <div class="cols2">
+      <div class="fig">
+        <div class="cap">ΔARPU APR → AUG, WATERFALL: MIX +$2.28, VALUE −$10.36</div>
+        <svg viewBox="0 0 460 210" role="img" aria-label="ARPU waterfall from April to August">
+          <g font-family="IBM Plex Mono" font-size="11" fill="#6B6E76">
+            <!-- scale: $1 = 3.4px, base y for $0 offscreen; draw relative: Apr 44.0 top y=40 -->
+            <rect x="45"  y="40"  width="70" height="140" fill="#4F46E5" opacity=".85"/>
+            <rect x="150" y="32.2" width="70" height="7.8" fill="#0B7A5E"/>
+            <rect x="255" y="32.2" width="70" height="35.2" fill="#D64524"/>
+            <rect x="360" y="67.4" width="70" height="112.6" fill="#4F46E5" opacity=".85"/>
+            <line x1="115" y1="40" x2="150" y2="40" stroke="#B9BAB4" stroke-dasharray="3 3"/>
+            <line x1="220" y1="32.2" x2="255" y2="32.2" stroke="#B9BAB4" stroke-dasharray="3 3"/>
+            <line x1="325" y1="67.4" x2="360" y2="67.4" stroke="#B9BAB4" stroke-dasharray="3 3"/>
+            <text x="80"  y="32" text-anchor="middle" fill="#191A23">$44.0</text>
+            <text x="185" y="24" text-anchor="middle" fill="#0B7A5E">+$2.28</text>
+            <text x="290" y="24" text-anchor="middle" fill="#D64524">−$10.36</text>
+            <text x="395" y="59" text-anchor="middle" fill="#191A23">$35.9</text>
+            <text x="80"  y="198" text-anchor="middle">2025-04</text>
+            <text x="185" y="198" text-anchor="middle">mix</text>
+            <text x="290" y="198" text-anchor="middle">value</text>
+            <text x="395" y="198" text-anchor="middle">2025-08</text>
+          </g>
+        </svg>
+        <div class="foot">Anchored on April, mix actually <i>helps</i>; the whole decline is within-segment value.</div>
+      </div>
+      <div class="fig">
+        <div class="cap">SAME DECOMPOSITION, TWO BASELINES — THE SIGN FLIPS</div>
+        <table style="margin:0;border:none;font-size:13.5px">
+          <tr><th>window</th><th class="num">ΔARPU</th><th class="num">mix</th><th class="num">value</th></tr>
+          <tr><td>Apr → Aug</td><td class="num"><b>−$8.09</b></td><td class="num">+$2.28</td><td class="num"><b>−$10.36</b></td></tr>
+          <tr><td>May → Aug</td><td class="num"><b>+$3.72</b></td><td class="num"><b>+$7.15</b></td><td class="num">−$3.43</td></tr>
+        </table>
+        <div class="foot"><b>One conclusion:</b> the headline's sign depends entirely on whether the launch month is the baseline — so there is no general ARPU decline to fix. What survives both baselines is a single localized story: the heavy segment's share tripled while its per-user value fell 42%, and that is where the pricing question lives.</div>
+      </div>
+    </div>
 
     <div class="cols2">
       <div class="fig">
@@ -455,13 +560,14 @@
       <div class="decision go">DECISION: 5 BETS</div>
     </div>
 
-    <div class="claim">A — what the tested hypotheses established</div>
+    <div class="claim">A — what Parts 1 and 2 established together</div>
     <table style="max-width:860px">
-      <tr><th>evidence (Part 1 tests / Part 2 model)</th><th>effect</th><th>consequence</th></tr>
-      <tr><td>First-bill churn is 49% and <b>proportional across segments</b>; behavior buys 11pp of renewal but 6× ARPU and 18× expansion</td><td class="num">0.07 vs 0.56–0.76</td><td>renewal is one shared problem; <b>segments are an expansion tool</b></td></tr>
-      <tr><td>Habit is real: W1 active days, short gaps, spaced &gt; binge all supported; 9–5 "professional", prompt length, 24h rule all failed</td><td class="num">0.05–0.07 / ns</td><td>segment on days + volume + mix — nothing else survived</td></tr>
-      <tr><td>Expansion follows volume and the plan ladder: top-20% M1 jobs, end-cycle spike, MoM growth, expand-early→expand-again</td><td class="num">0.16–0.29</td><td>monetization bets aim at 4–5, where the signals live</td></tr>
-      <tr><td>Cost ceiling runs backwards to LTV ($0.64 → $0.04 per image)</td><td class="num">16×</td><td>every volume-raising bet carries a margin check</td></tr>
+      <tr><th>evidence</th><th>part</th><th>effect</th><th>consequence</th></tr>
+      <tr><td>First-bill churn is 49%, <b>proportional across segments</b>, and NRR never crosses 100% (peaks at 85%) — expansion softens churn, it does not out-run it</td><td class="mono">P2</td><td class="num">49% / ≤85%</td><td>the first renewal is the one compounding problem, fixed once for everyone; upsell cannot substitute for it</td></tr>
+      <tr><td>Behavior predicts expansion 4–6× more strongly than renewal; habit signals real (W1 days, short gaps, spaced &gt; binge), while 9–5 "professional", prompt length and the 24h rule all failed</td><td class="mono">P1</td><td class="num">0.07 vs 0.56–0.76</td><td><b>segments are an expansion tool</b>, cut on days + volume + modality only; renewal work is not segment-specific</td></tr>
+      <tr><td>Expansion follows month-1 volume and the plan ladder: top-20% M1 jobs, end-of-cycle spike, MoM growth, expand-early → expand-again — and it lives almost entirely in segments 4–5</td><td class="mono">P1</td><td class="num">0.16–0.29</td><td>monetization bets aim at 4–5, where 66% of expansion revenue and all the signals sit</td></tr>
+      <tr><td>LTV spans $72 → $334 while the breakeven cost ceiling runs in reverse ($0.64 → $0.04 per image): the most valuable segments are the cheapest to lose money on</td><td class="mono">P2</td><td class="num">4.6× / 16×</td><td>CAC ceilings per segment, not blended; cost per generation before scaling heavy acquisition; every volume-raising bet carries a margin check</td></tr>
+      <tr><td>Heavy share tripled while heavy ARPU fell 42% (mix–value decomposition), and 36% of cycle-1 revenue comes from accounts generating nothing</td><td class="mono">P2</td><td class="num">−42% / 36%</td><td>plan-mix-by-cohort decides packaging vs channel; the dormant-payer list is next cycle's churn and today's refund risk</td></tr>
     </table>
 
     <div class="claim">B — therefore, one metric per segment</div>
@@ -557,6 +663,8 @@
       <tr><td><b>Hypothesis tests are observational</b> — Mann–Whitney / χ² effects on historical behavior</td><td>supported ≠ causal: heavy users expand more does not mean making users heavy makes them expand</td><td>segments used for targeting and sizing only; every product bet ships behind an A/B with its own guardrail</td></tr>
       <tr><td><b>Definition proxies</b> — no real quota field (quota_burn built from p75 of plan), hours in UTC not local, prompts measured in characters</td><td>work-hours and quota findings carry measurement noise; the 9–5 test may partly be a timezone artifact</td><td>none of these features survived into the final cut — segmentation rests on days, volume, gaps, and modality only</td></tr>
       <tr><td><b>Segments 1–3 differ mainly on the cut variable</b> (week-1 days)</td><td>on money and post-W1 volume they are nearly identical — three types would be an overclaim</td><td>treated explicitly as one funnel in three stages sharing one North-Star (M2 active), with stage-specific fixes</td></tr>
+      <tr><td><b>No content of the generations</b> — prompts and outputs themselves, quality labels or ratings are not in the data</td><td>diagnoses like "expectations not met" stay inferential, and the strongest feature signal — what people actually try to make and where it fails — is unavailable, though it would drive product features better than counts</td><td>content-adjacent proxies used where possible (prompt length, re-rolls, modality mix); first-render failure/cancel stats and output ratings are on the pull-first list</td></tr>
+      <tr><td><b>No release / campaign / trend calendar</b> — product launches, marketing pushes and viral moments are invisible</td><td>cohort differences (April's quality, August's dip, the heavy influx) cannot be attributed between acquisition channel, product change, or an external trend</td><td>level-vs-shape check shows cohorts differ on customer quality, not decay; channel and plan mix by cohort is the deciding pull</td></tr>
     </table>
     <div class="pagemark">06 / 07</div>
   </div>
